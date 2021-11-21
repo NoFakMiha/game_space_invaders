@@ -12,6 +12,8 @@ class SpaceInvaders:
         self.running = True
 
         self.character_spritesheet = Spratethesheet("img/shipsheetparts.PNG")
+        self.character1_spritesheet = Spratethesheet("img/player/player_right.png")
+        self.character2_spritesheet = Spratethesheet("img/player/player_left.png")
         self.terrain_spritesheet = Spratethesheet("img/background/colony.png")
 
     def createTilemap(self):

@@ -32,6 +32,9 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.game.character_spritesheet.get_sprite(18,12,SHIP_WIDTH, SHIP_HEIGHT)
 
+        self.image_right = pygame.transform.rotate(self.image, 270)
+        self.image_left = pygame.transform.rotate(self.image, 90)
+
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
@@ -50,8 +53,11 @@ class Player(pygame.sprite.Sprite):
     def movment(self):
         keys = pygame.key.get_pressed()
 
+        self.image = self.game.character_spritesheet.get_sprite(18, 12, SHIP_WIDTH, SHIP_HEIGHT)
+
         if keys[pygame.K_LEFT]:
             self.x_change -= PLAYER_SPEED
+            self.image = self.game.character2_spritesheet.get_sprite(0, 0, SHIP_WIDTH, SHIP_HEIGHT)
 
             if self.rect.x <=0:
                 self.x_change = 0
@@ -59,6 +65,7 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_RIGHT]:
             self.x_change += PLAYER_SPEED
+            self.image = self.game.character1_spritesheet.get_sprite(0, 0, SHIP_WIDTH, SHIP_HEIGHT)
 
             if self.rect.x >=590:
                 self.x_change = 0
