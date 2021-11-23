@@ -10,6 +10,9 @@ class SpaceInvaders:
         self.screen = pygame.display.set_mode((WINDOWS_WIDTH,WINDOWS_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
+        self.timer_enemie_projectile = 10
+        self.x_enemies = []
+        self.y_enemies = []
 
         self.character_spritesheet = Spratethesheet("img/shipsheetparts.PNG")
         self.character1_spritesheet = Spratethesheet("img/player/player_right.png")
@@ -53,8 +56,10 @@ class SpaceInvaders:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.buildings = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.player_sprite = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.projectile_player = pygame.sprite.LayeredUpdates()
+        self.projectile_enemie = pygame.sprite.LayeredUpdates()
 
 
         self.player = Player(self,320,400) # the numbers is giving a position of the character
@@ -76,6 +81,16 @@ class SpaceInvaders:
 
     def update(self):
         self.all_sprites.update()
+        self.timer_enemie_projectile -=1
+
+        if self.timer_enemie_projectile == 0:
+            for enemies in self.enemies:
+                self.x_enemies.append(enemies.rect.x)
+                self.y_enemies.append(enemies.rect.y)
+            ProjectileEnemies(self,random.choice(self.x_enemies),random.choice(self.y_enemies) )
+            self.timer_enemie_projectile = 60
+            self.x_enemies = []
+            self.y_enemies = []
 
         for sprite in self.buildings:
             if sprite.rect.y >=482:
@@ -86,7 +101,6 @@ class SpaceInvaders:
         self.screen.fill(GREEN_BACKGROUND)
         self.all_sprites.draw(self.screen)
         self.clock.tick(FPS)
-
         pygame.display.update()
 
     def main(self):

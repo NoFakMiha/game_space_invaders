@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, game, x,y):
         self.game = game
         self._layer = PLAYER_LAYER
-        self.groups = self.game.all_sprites
+        self.groups = self.game.all_sprites, self.game.player_sprite
         pygame.sprite.Sprite.__init__(self,self.groups)
 
         self.x = x
@@ -190,5 +190,34 @@ class Eneimes(pygame.sprite.Sprite):
             self.speed_enemy_loop = 1
             self.y_change += 20
 
-# class ProjectileEnemies():
-#     def __init__(self), game,x,y:
+class ProjectileEnemies(pygame.sprite.Sprite):
+    def __init__(self, game,x,y):
+        self.game = game
+        self.x = x
+        self.y = y
+        self._layer = PLAYER_LAYER
+        self.groups = self.game.all_sprites, self.game.projectile_enemie,
+        pygame.sprite.Sprite.__init__(self,self.groups)
+
+        self.width = PROJECTILE_TILE_WIDTH
+        self.height = PROJECTILE_TILE_HEIGHT
+
+        self.image = self.game.projectile_sprite_sheet.get_sprite(0, 0, self.width, self.height)
+        self.rect = self.image.get_rect()
+
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def update(self):
+        self.rect.y +=6
+        if self.rect.y > 481:
+            print(len(self.game.projectile_enemie))
+            self.kill()
+        self.collide_player()
+
+    def collide_player(self):
+        colide_player = pygame.sprite.spritecollide(self,self.game.player_sprite, False)
+        if colide_player:
+            self.kill()
+            pygame.quit()
+
