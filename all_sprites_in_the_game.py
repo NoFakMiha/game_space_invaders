@@ -32,8 +32,7 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.game.character_spritesheet.get_sprite(18,12,SHIP_WIDTH, SHIP_HEIGHT)
 
-        self.image_right = pygame.transform.rotate(self.image, 270)
-        self.image_left = pygame.transform.rotate(self.image, 90)
+
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -52,6 +51,7 @@ class Player(pygame.sprite.Sprite):
 
     def movment(self):
         keys = pygame.key.get_pressed()
+        event = pygame.event.get()
 
         self.image = self.game.character_spritesheet.get_sprite(18, 12, SHIP_WIDTH, SHIP_HEIGHT)
 
@@ -69,6 +69,50 @@ class Player(pygame.sprite.Sprite):
 
             if self.rect.x >=590:
                 self.x_change = 0
+
+        if keys[pygame.K_SPACE] and len(self.game.projectile_player)<3:
+            Projectile(self.game, self.rect.x, self.rect.y)
+
+
+
+class Projectile(pygame.sprite.Sprite):
+    def __init__(self, game,x,y):
+        self.game = game
+        self._layer = PLAYER_LAYER
+        self.groups = self.game.all_sprites, self.game.projectile_player
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x
+        self.y = y
+
+        self.width = PROJECTILE_TILE_WIDTH
+        self.height = PROJECTILE_TILE_HEIGHT
+
+        self.x_change = 0
+        self.y_change = 0
+
+        self.image = self.game.projectile_sprite_sheet.get_sprite(0, 0, self.width, self.height)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def update(self):
+        self.rect.y -=6
+        self.colide_enemy()
+        print(self.rect.y)
+        if self.rect.y <= 0:
+            self.kill()
+
+
+    def colide_enemy(self):
+        colide_enemy = pygame.sprite.spritecollide(self,self.game.enemies,True)
+        if colide_enemy:
+            self.kill()
+
+
+
+
 
 
 class Ground(pygame.sprite.Sprite):
@@ -145,3 +189,6 @@ class Eneimes(pygame.sprite.Sprite):
         if self.rect.x <=0:
             self.speed_enemy_loop = 1
             self.y_change += 20
+
+# class ProjectileEnemies():
+#     def __init__(self), game,x,y:

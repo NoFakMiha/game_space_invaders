@@ -14,6 +14,7 @@ class SpaceInvaders:
         self.character_spritesheet = Spratethesheet("img/shipsheetparts.PNG")
         self.character1_spritesheet = Spratethesheet("img/player/player_right.png")
         self.character2_spritesheet = Spratethesheet("img/player/player_left.png")
+        self.projectile_sprite_sheet = Spratethesheet("img/jrob774-explosion_2-sheet-alpha.png")
         self.terrain_spritesheet = Spratethesheet("img/background/colony.png")
 
     def createTilemap(self):
@@ -53,10 +54,12 @@ class SpaceInvaders:
         self.buildings = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
-        self.attack = pygame.sprite.LayeredUpdates()
+        self.projectile_player = pygame.sprite.LayeredUpdates()
 
 
         self.player = Player(self,320,400) # the numbers is giving a position of the character
+
+
 
         x=50
         for i in range(11):
@@ -77,16 +80,6 @@ class SpaceInvaders:
         for sprite in self.buildings:
             if sprite.rect.y >=482:
                 sprite.rect.y = -100
-
-        # for sprite in self.enemies:
-        #     sprite.rect.x += self.speed_enemy
-        #     if sprite.rect.x >=550:
-        #         self.speed_enemy = 0
-        #         self.speed_enemy=-1
-        #
-        #     if sprite.rect.x <=10:
-        #         self.speed_enemy = 0
-        #         self.speed_enemy = 1
 
 
     def draw(self):
