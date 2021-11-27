@@ -15,6 +15,45 @@ class Spratethesheet:
         return sprite
 
 
+class Score_Board:
+    def __init__(self, game, x,y,score, time):
+        self.game = game
+        self._layer = PLAYER_LAYER
+        self.groups = self.gam
+        score_board = self.game.font.render("Time and score", False, WHITE)
+        score_board_rect = score_board.get_rect(center=(30, 30))
+        self.game.screen.blit(score_board, score_board_rect)
+
+
+
+class Button:
+    def __init__(self, x,y,width,height, fg,content, fontsize):
+        self.font = pygame.font.Font("fonts/VT323-Regular.ttf", fontsize)
+        self.content = content
+        self.x = x
+        self.y = y
+
+        self.width = width
+        self.height = height
+
+
+        self.fg = fg
+        self.image = pygame.Surface((self.width,self.height))
+        self.rect = self.image.get_rect(topleft=(self.x,self.y))
+
+        self.text = self.font.render(self.content,True, self.fg)
+        self.text_rect = self.text.get_rect(center=(self.width/2, self.height/2))
+        self.image.blit(self.text, self.text_rect)
+
+    def is_pressed(self,pos,pressed):
+        if self.rect.collidepoint(pos):
+            if pressed[0]:
+                return True
+            return False
+        return False
+
+
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x,y):
         self.game = game
@@ -109,6 +148,8 @@ class Projectile(pygame.sprite.Sprite):
         colide_enemy = pygame.sprite.spritecollide(self,self.game.enemies,True)
         if colide_enemy:
             self.kill()
+            pygame.mixer.Sound.play(self.game.hit_sound)
+            pygame.mixer.music.stop()
 
 
 
@@ -219,5 +260,6 @@ class ProjectileEnemies(pygame.sprite.Sprite):
         colide_player = pygame.sprite.spritecollide(self,self.game.player_sprite, False)
         if colide_player:
             self.kill()
-            pygame.quit()
+            self.game.playing = False
+
 

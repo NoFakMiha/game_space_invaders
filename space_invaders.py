@@ -10,6 +10,8 @@ class SpaceInvaders:
         self.screen = pygame.display.set_mode((WINDOWS_WIDTH,WINDOWS_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
+        self.font = pygame.font.Font("fonts/VT323-Regular.ttf", 32)
+
         self.timer_enemie_projectile = 10
         self.x_enemies = []
         self.y_enemies = []
@@ -19,6 +21,8 @@ class SpaceInvaders:
         self.character2_spritesheet = Spratethesheet("img/player/player_left.png")
         self.projectile_sprite_sheet = Spratethesheet("img/jrob774-explosion_2-sheet-alpha.png")
         self.terrain_spritesheet = Spratethesheet("img/background/colony.png")
+
+        self.hit_sound = pygame.mixer.Sound("sound/hit_from_tobi.mp3")
 
     def createTilemap(self):
         self.buidlings =[
@@ -44,12 +48,6 @@ class SpaceInvaders:
 
 
 
-
-
-
-
-
-
     def new(self):
         self.playing = True
 
@@ -66,11 +64,14 @@ class SpaceInvaders:
 
 
 
+
         x=50
         for i in range(11):
             Eneimes(self,x,50)
             x+=50
         self.createTilemap()
+
+
 
     def events(self):
         for event in pygame.event.get():
@@ -108,13 +109,56 @@ class SpaceInvaders:
             self.events()
             self.update()
             self.draw()
-        self.running = False
+        self.running = True
 
     def game_over(self):
-        pass
+        text = self.font.render("Game over", True, WHITE)
+        text_rect = text.get_rect(center=(WINDOWS_WIDTH / 2, WINDOWS_HEIGHT / 2))
+
+        restart_button = Button(260, (WINDOWS_HEIGHT / 2 + 20), 120, 50, WHITE, "Restart", 32)
+
+        for sprite in self.all_sprites:
+            sprite.kill()
+
+        while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_pressed = pygame.mouse.get_pressed()
+
+            if restart_button.is_pressed(mouse_pos, mouse_pressed):
+                self.new()
+                self.main()
+            self.screen.blit(text, text_rect)
+            self.screen.blit(restart_button.image, restart_button.rect)
+            self.clock.tick(FPS)
+            pygame.display.update()
+
+
 
     def intro_screen(self):
-        pass
+        intro = True
+        title = self.font.render("The space invaders on Mars", True, WHITE)
+        title_rect = title.get_rect(x=180,y=10)
+        self.intro_background = self.screen.fill("Black")
+
+        play_button = Button(280,50,100,50, WHITE, "Play", 32)
+
+        while intro:
+            for event  in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    intro = False
+                    self.running = False
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_pressed = pygame.mouse.get_pressed()
+            if play_button.is_pressed(mouse_pos, mouse_pressed):
+                intro = False
+
+            self.screen.blit(title, title_rect)
+            self.screen.blit(play_button.image, play_button.rect)
+            self.clock.tick(FPS)
+            pygame.display.update()
 
 
 g = SpaceInvaders()
