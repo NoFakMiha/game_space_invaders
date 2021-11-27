@@ -12,6 +12,10 @@ class SpaceInvaders:
         self.running = True
         self.font = pygame.font.Font("fonts/VT323-Regular.ttf", 32)
 
+        self.KILLS = 0
+        self.LEVEL = 1
+        self.LEVEL_TIMER = 60
+
         self.timer_enemie_projectile = 10
         self.x_enemies = []
         self.y_enemies = []
@@ -66,7 +70,7 @@ class SpaceInvaders:
 
 
         x=50
-        for i in range(11):
+        for i in range(self.LEVEL):
             Eneimes(self,x,50)
             x+=50
         self.createTilemap()
@@ -84,14 +88,24 @@ class SpaceInvaders:
         self.all_sprites.update()
         self.timer_enemie_projectile -=1
 
-        if self.timer_enemie_projectile == 0:
-            for enemies in self.enemies:
-                self.x_enemies.append(enemies.rect.x)
-                self.y_enemies.append(enemies.rect.y)
-            ProjectileEnemies(self,random.choice(self.x_enemies),random.choice(self.y_enemies) )
-            self.timer_enemie_projectile = 60
+        if len(self.enemies) !=0:
+            if self.timer_enemie_projectile == 0:
+                for enemies in self.enemies:
+                    self.x_enemies.append(enemies.rect.x)
+                    self.y_enemies.append(enemies.rect.y)
+                ProjectileEnemies(self,random.choice(self.x_enemies),random.choice(self.y_enemies) )
+                self.timer_enemie_projectile = self.LEVEL_TIMER
+                self.x_enemies = []
+                self.y_enemies = []
+        else:
+            for sprite in self.all_sprites:
+                sprite.kill()
             self.x_enemies = []
             self.y_enemies = []
+            self.LEVEL += 1
+            self.LEVEL_TIMER -= 5
+            self.new()
+            self.main()
 
         for sprite in self.buildings:
             if sprite.rect.y >=482:
@@ -101,6 +115,9 @@ class SpaceInvaders:
     def draw(self):
         self.screen.fill(GREEN_BACKGROUND)
         self.all_sprites.draw(self.screen)
+        score_board = self.font.render(f"Score: {self.KILLS} | Level: {self.LEVEL}", True, WHITE)
+        score_board_rect = score_board.get_rect(x=10,y=10)
+        self.screen.blit(score_board, score_board_rect)
         self.clock.tick(FPS)
         pygame.display.update()
 
@@ -128,8 +145,12 @@ class SpaceInvaders:
             mouse_pressed = pygame.mouse.get_pressed()
 
             if restart_button.is_pressed(mouse_pos, mouse_pressed):
+                self.KILLS = 0
+                self.LEVEL_TIMER = 60
+                self.LEVEL = 0
                 self.new()
                 self.main()
+
             self.screen.blit(text, text_rect)
             self.screen.blit(restart_button.image, restart_button.rect)
             self.clock.tick(FPS)
@@ -159,7 +180,6 @@ class SpaceInvaders:
             self.screen.blit(play_button.image, play_button.rect)
             self.clock.tick(FPS)
             pygame.display.update()
-
 
 g = SpaceInvaders()
 g.intro_screen()

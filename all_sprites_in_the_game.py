@@ -121,7 +121,7 @@ class Projectile(pygame.sprite.Sprite):
         self.groups = self.game.all_sprites, self.game.projectile_player
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-        self.x = x
+        self.x = x+12
         self.y = y
 
         self.width = PROJECTILE_TILE_WIDTH
@@ -139,7 +139,6 @@ class Projectile(pygame.sprite.Sprite):
     def update(self):
         self.rect.y -=6
         self.colide_enemy()
-        print(self.rect.y)
         if self.rect.y <= 0:
             self.kill()
 
@@ -148,6 +147,7 @@ class Projectile(pygame.sprite.Sprite):
         colide_enemy = pygame.sprite.spritecollide(self,self.game.enemies,True)
         if colide_enemy:
             self.kill()
+            self.game.KILLS +=1
             pygame.mixer.Sound.play(self.game.hit_sound)
             pygame.mixer.music.stop()
 
@@ -234,8 +234,8 @@ class Eneimes(pygame.sprite.Sprite):
 class ProjectileEnemies(pygame.sprite.Sprite):
     def __init__(self, game,x,y):
         self.game = game
-        self.x = x
-        self.y = y
+        self.x = x  + 12
+        self.y = y + 40
         self._layer = PLAYER_LAYER
         self.groups = self.game.all_sprites, self.game.projectile_enemie,
         pygame.sprite.Sprite.__init__(self,self.groups)
@@ -252,7 +252,6 @@ class ProjectileEnemies(pygame.sprite.Sprite):
     def update(self):
         self.rect.y +=6
         if self.rect.y > 481:
-            print(len(self.game.projectile_enemie))
             self.kill()
         self.collide_player()
 
